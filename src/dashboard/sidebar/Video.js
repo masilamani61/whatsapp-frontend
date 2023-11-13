@@ -36,7 +36,7 @@ function Video({localstream,me}) {
     <Container>
         { localstream && (
             me?(
-        <Videotab ref={videoref} autoPlay  muted />): <Videotab ref={videoref} autoPlay muted  />)
+        <Videotab ref={videoref} autoPlay  muted />): <Videotab ref={videoref} autoPlay  />)
 }
     </Container>
     
