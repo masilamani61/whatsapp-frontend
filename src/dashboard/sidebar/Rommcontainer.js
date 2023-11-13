@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import React, { useState } from 'react'
 import Roombutton from './roombutton/Roombutton'
-import { Button } from '@mui/material'
+import { Button, Fab } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { leaverempotestream, removeroom, setlocalstrem } from '../../store/store'
 import { leaveroom } from '../realtimecommunication/socket-client'
@@ -13,8 +13,8 @@ function Rommcontainer() {
     const [showfull,setshowfull]=useState(false)
     const Maincontainer=styled('div')({
         position:'absolute',
-        bottom:'0',
-        right:'0',
+        top:0,
+        left:'0',
         display:'flex',
         flexDirection:'column',
         alignItems:'center',
@@ -28,14 +28,15 @@ function Rommcontainer() {
         width:'100%'
     }
     const miniscreen={
-        height:'50vh',
-        width:'50vh'
+        height:'40vh',
+        width:'40vh'
     }
     const dispatch=useDispatch()
     const {roomdetails,localstream,remotestream}=useSelector(state=>state.room)
     const deleteclick=()=>{
         leaveroom(roomdetails.room?.roomid)
         dispatch(removeroom())
+        console.log('deleted')
         if (localstream){
         localstream.getTracks().forEach(track => {
             track.stop()
@@ -47,23 +48,24 @@ function Rommcontainer() {
     }
   return (
     <Maincontainer style={showfull?showfullscreen:miniscreen}>
-        <div style={{position:'absolute',right:0,top:0}}>
+        <div style={{right:0,top:0}}>
             <Button onClick={deleteclick}>cancel</Button>
         </div>
-        <Grid container spacing={2} sx={{margin:"auto",overflow:"hidden",width:"100%"}} >
-            <Grid item  xs={12} md={6}>
-            <Video localstream={localstream} />
 
-            </Grid>
-            {remotestream?.map(stream=>(
-                <Grid item xs={12} md={6}>
-            <Video localstream={stream}/>
-            </Grid>
-        ))}
+        <div style={{display:'flex', flexDirection:'column',height:'100%',width:'100%'}}>
+            {localstream&&
+        <Video localstream={localstream} me={true} />}
+        {remotestream &&(
+            remotestream.map(r=>(
+             <Video localstream={r} me={false} /> )))}
+        </div>
+       
+            
+           
+       
                 
             
 
-        </Grid>
         {/* <div style={{position:'absolute',top:'0',left:'0'}}>
         <Video localstream={localstream} />
         </div>
